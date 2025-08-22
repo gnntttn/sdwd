@@ -7,13 +7,14 @@ import { Surah, Verse } from '../types/quran';
 import { VerseCard } from '../components/quran/VerseCard';
 import { AudioPlayer } from '../components/audio/AudioPlayer';
 import { useLanguage } from '../context/LanguageContext';
+import { TAFSIR_RESOURCE_ID, translationMap } from '../lib/i18n';
 
 const AUDIO_BASE_URL = 'https://verses.quran.com/';
 
 export function JuzPage() {
   const { id } = useParams<{ id: string }>();
   const juzId = id ? parseInt(id, 10) : 0;
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const [verses, setVerses] = useState<Verse[]>([]);
   const [surahMap, setSurahMap] = useState<Map<number, Surah>>(new Map());
@@ -36,14 +37,15 @@ export function JuzPage() {
     if (juzId > 0) {
       loadJuzData(juzId);
     }
-  }, [juzId]);
+  }, [juzId, language]);
 
   const loadJuzData = async (juzId: number) => {
     setLoading(true);
     try {
+      const translationIds = [translationMap[language], TAFSIR_RESOURCE_ID.toString()].filter(Boolean).join(',');
       const versesData = await quranApi.getVersesByJuz(juzId, {
-        translations: '131', // Saheeh International
-        audio: '7', // Mishary Rashid Alafasy
+        translations: translationIds,
+        audio: '7',
       });
       setVerses(versesData);
     } catch (error) {
@@ -139,7 +141,7 @@ export function JuzPage() {
                 index={index}
                 isPlaying={currentPlayingVerse === verse.verseKey}
                 onPlay={() => handleVersePlay(verse)}
-                showTranslation={showTranslations}
+                showTranslation={showTranslations && language !== 'ar'}
               />
             );
           })}

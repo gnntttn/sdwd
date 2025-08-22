@@ -1,5 +1,13 @@
 export type Language = 'en' | 'fr' | 'ar';
 
+export const TAFSIR_RESOURCE_ID = 16; // Tafsir Al-Muyassar
+
+export const translationMap: { [key in Language]: string } = {
+  en: '131', // Saheeh International
+  fr: '21',  // Muhammad Hamidullah
+  ar: '',    // No main translation for Arabic, only Tafsir
+};
+
 export const translations = {
   en: {
     home: 'Home',
@@ -85,6 +93,9 @@ export const translations = {
     tasbeeh_title: 'Daily Praises',
     new_tasbeeh: 'New Praise',
     try_again: 'Try Again',
+    tafsir: 'Tafsir',
+    show_tafsir: 'Show Tafsir',
+    hide_tafsir: 'Hide Tafsir',
   },
   fr: {
     home: 'Accueil',
@@ -170,6 +181,9 @@ export const translations = {
     tasbeeh_title: 'Louanges Quotidiennes',
     new_tasbeeh: 'Nouvelle Louange',
     try_again: 'Réessayer',
+    tafsir: 'Tafsir',
+    show_tafsir: 'Afficher le Tafsir',
+    hide_tafsir: 'Masquer le Tafsir',
   },
   ar: {
     home: 'الرئيسية',
@@ -255,6 +269,9 @@ export const translations = {
     tasbeeh_title: 'تسبيحات اليوم',
     new_tasbeeh: 'تسبيحة جديدة',
     try_again: 'حاول مرة أخرى',
+    tafsir: 'التفسير',
+    show_tafsir: 'إظهار التفسير',
+    hide_tafsir: 'إخفاء التفسير',
   },
 };
 

@@ -46,6 +46,30 @@ class QuranApiService {
     }
   }
 
+  private mapVerse(verse: any): Verse {
+    return {
+      id: verse.id,
+      verseKey: verse.verse_key,
+      verseNumber: verse.verse_number,
+      textUthmani: verse.text_uthmani,
+      textSimple: verse.text_simple,
+      translations: verse.translations?.map((t: any) => ({
+        id: t.id,
+        resource_id: parseInt(t.resource_id, 10),
+        text: t.text,
+        resourceName: t.resource_name,
+        languageName: t.language_name,
+      })),
+      audio: verse.audio ? {
+        url: verse.audio.url,
+        duration: verse.audio.duration,
+      } : undefined,
+      page: verse.page_number,
+      juz: verse.juz_number,
+      hizb: verse.hizb_number,
+    };
+  }
+
   async getAllVersesBySurah(surahId: number, options?: { translations?: string; audio?: string; }): Promise<Verse[]> {
     let allVerses: Verse[] = [];
     let currentPage = 1;
@@ -57,31 +81,12 @@ class QuranApiService {
         if (options?.translations) params.append('translations', options.translations);
         if (options?.audio) params.append('audio', options.audio);
         params.append('fields', 'text_uthmani,text_simple');
-        params.append('per_page', '50'); // Fetch 50 verses per request
+        params.append('per_page', '50');
         params.append('page', currentPage.toString());
 
         const response = await this.api.get(`/verses/by_chapter/${surahId}?${params.toString()}`);
         
-        const fetchedVerses = response.data.verses.map((verse: any) => ({
-          id: verse.id,
-          verseKey: verse.verse_key,
-          verseNumber: verse.verse_number,
-          textUthmani: verse.text_uthmani,
-          textSimple: verse.text_simple,
-          translations: verse.translations?.map((t: any) => ({
-            id: t.id,
-            text: t.text,
-            resourceName: t.resource_name,
-            languageName: t.language_name,
-          })),
-          audio: verse.audio ? {
-            url: verse.audio.url,
-            duration: verse.audio.duration,
-          } : undefined,
-          page: verse.page_number,
-          juz: verse.juz_number,
-          hizb: verse.hizb_number,
-        }));
+        const fetchedVerses = response.data.verses.map(this.mapVerse);
 
         allVerses = [...allVerses, ...fetchedVerses];
 
@@ -92,7 +97,7 @@ class QuranApiService {
         }
       } catch (error) {
         console.error(`Error fetching page ${currentPage} for surah ${surahId}:`, error);
-        hasMorePages = false; // Stop fetching on error
+        hasMorePages = false;
       }
     }
     return allVerses;
@@ -107,26 +112,7 @@ class QuranApiService {
 
         const response = await this.api.get(`/verses/by_juz/${juzId}?${params}`);
         
-        return response.data.verses.map((verse: any) => ({
-            id: verse.id,
-            verseKey: verse.verse_key,
-            verseNumber: verse.verse_number,
-            textUthmani: verse.text_uthmani,
-            textSimple: verse.text_simple,
-            translations: verse.translations?.map((t: any) => ({
-                id: t.id,
-                text: t.text,
-                resourceName: t.resource_name,
-                languageName: t.language_name,
-            })),
-            audio: verse.audio ? {
-                url: verse.audio.url,
-                duration: verse.audio.duration,
-            } : undefined,
-            page: verse.page_number,
-            juz: verse.juz_number,
-            hizb: verse.hizb_number,
-        }));
+        return response.data.verses.map(this.mapVerse);
     } catch (error) {
         console.error(`Error fetching verses for Juz ${juzId}:`, error);
         return [];
@@ -143,26 +129,7 @@ class QuranApiService {
         const response = await this.api.get(`/verses/by_key/${verseKey}?${params}`);
         const verseData = response.data.verse;
         return {
-            verse: {
-                id: verseData.id,
-                verseKey: verseData.verse_key,
-                verseNumber: verseData.verse_number,
-                textUthmani: verseData.text_uthmani,
-                textSimple: verseData.text_simple,
-                translations: verseData.translations?.map((t: any) => ({
-                    id: t.id,
-                    text: t.text,
-                    resourceName: t.resource_name,
-                    languageName: t.language_name,
-                })),
-                audio: verseData.audio ? {
-                    url: verseData.audio.url,
-                    duration: verseData.audio.duration,
-                } : undefined,
-                page: verseData.page_number,
-                juz: verseData.juz_number,
-                hizb: verseData.hizb_number,
-            }
+            verse: this.mapVerse(verseData)
         };
     } catch (error) {
         console.error(`Error fetching verse by key ${verseKey}:`, error);

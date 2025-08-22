@@ -23,6 +23,7 @@ export interface Verse {
 
 export interface Translation {
   id?: number;
+  resource_id?: number;
   text: string;
   resourceName: string;
   languageName?: string;
@@ -56,10 +57,4 @@ export interface SearchResult {
   verse: Verse;
   surah: Surah;
   highlights: string[];
-}
-
-export interface Bookmark {
-  verseKey: string;
-  note?: string;
-  createdAt: string;
 }

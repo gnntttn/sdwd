@@ -6,11 +6,12 @@ import { quranApi } from '../services/quranApi';
 import { Verse, Surah } from '../types/quran';
 import { VerseCard } from '../components/quran/VerseCard';
 import { useLanguage } from '../context/LanguageContext';
+import { TAFSIR_RESOURCE_ID, translationMap } from '../lib/i18n';
 
 type BookmarkedVerse = Verse & { surah: Surah };
 
 export function BookmarksPage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [bookmarks] = useLocalStorage<string[]>('quran-bookmarks', []);
   const [bookmarkedVerses, setBookmarkedVerses] = useState<BookmarkedVerse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -18,11 +19,13 @@ export function BookmarksPage() {
   useEffect(() => {
     const fetchBookmarks = async () => {
       setLoading(true);
+      const translationIds = [translationMap[language], TAFSIR_RESOURCE_ID.toString()].filter(Boolean).join(',');
+
       const promises = bookmarks.map(async (key) => {
         const [surahIdStr] = key.split(':');
         const surahId = parseInt(surahIdStr, 10);
         
-        const versePromise = quranApi.getVerseByKey(key, { translations: '131' });
+        const versePromise = quranApi.getVerseByKey(key, { translations: translationIds });
         const surahPromise = quranApi.getSurah(surahId);
 
         const [verseResult, surahResult] = await Promise.all([versePromise, surahPromise]);
@@ -44,7 +47,7 @@ export function BookmarksPage() {
       setLoading(false);
       setBookmarkedVerses([]);
     }
-  }, [bookmarks]);
+  }, [bookmarks, language]);
 
   if (loading) {
     return (
@@ -81,7 +84,7 @@ export function BookmarksPage() {
                 verse={item}
                 surah={item.surah}
                 index={index}
-                showTranslation={true}
+                showTranslation={language !== 'ar'}
               />
             ))}
           </div>

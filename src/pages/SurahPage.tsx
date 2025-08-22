@@ -9,14 +9,9 @@ import { AudioPlayer } from '../components/audio/AudioPlayer';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { SurahSettingsPanel } from '../components/quran/SurahSettingsPanel';
 import { useLanguage } from '../context/LanguageContext';
+import { TAFSIR_RESOURCE_ID, translationMap } from '../lib/i18n';
 
 const AUDIO_BASE_URL = 'https://verses.quran.com/';
-
-const translationMap = {
-  en: '131', // Saheeh International
-  fr: '21',  // Muhammad Hamidullah
-  ar: '',
-};
 
 export function SurahPage() {
   const { id } = useParams<{ id: string }>();
@@ -69,8 +64,10 @@ export function SurahPage() {
       const surahData = await quranApi.getSurah(surahId);
       setSurah(surahData);
 
+      const translationIds = [translationMap[language], TAFSIR_RESOURCE_ID.toString()].filter(Boolean).join(',');
+
       const versesData = await quranApi.getAllVersesBySurah(surahId, {
-        translations: translationMap[language],
+        translations: translationIds,
         audio: selectedReciter,
       });
       setVerses(versesData);

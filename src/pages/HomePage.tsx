@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { BookOpen, Users, Clock } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { HadithOfTheDay } from '../components/home/HadithOfTheDay';
 import { TasbeehCarousel } from '../components/home/TasbeehCarousel';
 
 export function HomePage() {
@@ -28,9 +27,6 @@ export function HomePage() {
           <h1 className="text-4xl font-bold font-arabic mb-2 text-primary-dark dark:text-white dark:text-shadow-glow-md" style={{ textShadow: '0 0 15px rgba(49, 130, 206, 0.7)' }}>{t('main_title')}</h1>
           <p className="text-primary dark:text-primary-light/80">{t('main_subtitle')}</p>
         </motion.div>
-
-        {/* Hadith of the Day */}
-        <HadithOfTheDay />
 
         {/* Tasbeeh Carousel */}
         <TasbeehCarousel />
