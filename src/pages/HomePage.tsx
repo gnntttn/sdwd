@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { BookOpen, Users, Clock } from 'lucide-react';
+import { BookOpen, Users } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { TasbeehCarousel } from '../components/home/TasbeehCarousel';
 
@@ -11,7 +11,6 @@ export function HomePage() {
   const quickActions = [
     { to: '/juzs', text: t('juzs'), icon: BookOpen },
     { to: '/reciters', text: t('reciters'), icon: Users },
-    { to: '/prayer-times', text: t('prayerTimes'), icon: Clock },
   ];
 
   return (
@@ -32,7 +31,7 @@ export function HomePage() {
         <TasbeehCarousel />
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           {quickActions.map((action, index) => (
             <motion.div
               key={action.to}

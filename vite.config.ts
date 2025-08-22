@@ -7,13 +7,17 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      injectManifest: {
+        swSrc: 'src/sw.ts',
+        swDest: 'dist/sw.js',
+      },
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
         name: 'AYA - القرآن الكريم',
         short_name: 'AYA',
         description: 'تطبيق القرآن الكريم للقراءة والاستماع والتدبر.',
-        theme_color: '#ffffff',
-        background_color: '#ffffff',
+        theme_color: '#0b0c10',
+        background_color: '#0b0c10',
         display: 'standalone',
         scope: '/',
         start_url: '/',

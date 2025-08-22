@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, BookCopy, Bookmark, Clock } from 'lucide-react';
+import { Home, BookCopy, Bookmark } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
 export function BottomNav() {
@@ -10,11 +10,10 @@ export function BottomNav() {
     { to: '/', text: t('home'), icon: Home },
     { to: '/surahs', text: t('surahs'), icon: BookCopy },
     { to: '/bookmarks', text: t('bookmarks'), icon: Bookmark },
-    { to: '/prayer-times', text: t('prayerTimes'), icon: Clock },
   ];
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `flex flex-col items-center gap-1 p-2 rounded-lg transition-all duration-300 w-16 ${
+    `flex flex-col items-center gap-1 p-2 rounded-lg transition-all duration-300 w-20 ${
       isActive ? 'text-accent-light' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
     }`;
 

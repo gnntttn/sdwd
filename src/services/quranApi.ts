@@ -138,18 +138,42 @@ class QuranApiService {
   }
 
   async getReciters(): Promise<Reciter[]> {
-    try {
-      const response = await this.api.get('/resources/recitations?language=ar');
-      return response.data.recitations.map((reciter: any) => ({
-        id: reciter.id,
-        name: reciter.reciter_name,
-        nameArabic: reciter.translated_name.name,
-        style: reciter.style,
-      }));
-    } catch (error) {
-      console.error('Error fetching reciters:', error);
-      return this.getFallbackReciters();
+    let allReciters: Reciter[] = [];
+    let currentPage = 1;
+    let hasMorePages = true;
+
+    while (hasMorePages) {
+      try {
+        const response = await this.api.get('/resources/recitations', {
+          params: {
+            language: 'ar',
+            page: currentPage,
+            per_page: 50
+          }
+        });
+        
+        const fetchedReciters = response.data.recitations.map((reciter: any) => ({
+          id: reciter.id,
+          name: reciter.reciter_name,
+          nameArabic: reciter.translated_name.name,
+          style: reciter.style,
+        }));
+        allReciters = [...allReciters, ...fetchedReciters];
+
+        if (response.data.pagination && response.data.pagination.next_page) {
+          currentPage = response.data.pagination.next_page;
+        } else {
+          hasMorePages = false;
+        }
+      } catch (error) {
+        console.error(`Error fetching page ${currentPage} for reciters:`, error);
+        hasMorePages = false;
+        if (currentPage === 1) {
+            return this.getFallbackReciters();
+        }
+      }
     }
+    return allReciters.length > 0 ? allReciters : this.getFallbackReciters();
   }
 
   async searchVerses(query: string, options?: {

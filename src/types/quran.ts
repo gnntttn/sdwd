@@ -42,17 +42,6 @@ export interface Reciter {
   qiraat?: string;
 }
 
-export interface PrayerTimes {
-  fajr: string;
-  sunrise: string;
-  dhuhr: string;
-  asr: string;
-  maghrib: string;
-  isha: string;
-  date: string;
-  hijriDate?: string;
-}
-
 export interface SearchResult {
   verse: Verse;
   surah: Surah;

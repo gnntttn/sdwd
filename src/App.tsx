@@ -9,11 +9,18 @@ import { JuzsPage } from './pages/JuzsPage';
 import { JuzPage } from './pages/JuzPage';
 import { RecitersPage } from './pages/RecitersPage';
 import { BookmarksPage } from './pages/BookmarksPage';
-import { PrayerTimesPage } from './pages/PrayerTimesPage';
 import { BottomNav } from './components/common/BottomNav';
+import { useLocalStorage } from './hooks/useLocalStorage';
+import { Onboarding } from './components/onboarding/Onboarding';
+import { NotificationPrompt } from './components/common/NotificationPrompt';
 
 function App() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useLocalStorage('hasCompletedOnboarding', false);
+
+  if (!hasCompletedOnboarding) {
+    return <Onboarding onComplete={() => setHasCompletedOnboarding(true)} />;
+  }
 
   return (
     <Router>
@@ -29,7 +36,6 @@ function App() {
             <Route path="/juz/:id" element={<JuzPage />} />
             <Route path="/reciters" element={<RecitersPage />} />
             <Route path="/bookmarks" element={<BookmarksPage />} />
-            <Route path="/prayer-times" element={<PrayerTimesPage />} />
           </Routes>
         </main>
 
@@ -39,6 +45,8 @@ function App() {
           isOpen={isSearchOpen} 
           onClose={() => setIsSearchOpen(false)} 
         />
+
+        <NotificationPrompt />
       </div>
     </Router>
   );
